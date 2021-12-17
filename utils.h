@@ -23,3 +23,8 @@ const char* mapFile(const char* fname, size_t& length)
 
     return addr;
 }
+
+int unmapFile(const char *buf, size_t bufSize) {
+    return munmap((void*)buf, bufSize);
+}
+
