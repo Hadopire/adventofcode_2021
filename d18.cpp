@@ -26,8 +26,11 @@ SnailNumber::iterator explode(SnailNumber &number, SnailNumber::iterator it) {
 
     it->value = 0;
     it->depth -= 1;
-    if (it != number.begin()) --it;
+    if (it != number.begin()) it = std::prev(it, 1);
     number.erase(next);
+
+
+    
     return it;
 }
 
@@ -64,19 +67,16 @@ size_t magnitude(SnailNumber &number) {
 
 void eval(SnailNumber &number, int baseDepth) {
     explodeAll(number, baseDepth);
-
     for (auto it = number.begin(); it != number.end();) {
         if (it->value >= 10) {
             int a = std::floor(it->value / 2.0);
             int b = std::ceil(it->value / 2.0);
             it->depth += 1;
             it->value = b;
-            auto prev = number.insert(it, { a, it->depth });
-
-            if (it->depth + baseDepth >= 4) {
-                it = explode(number, prev);
-            } else {
-                ++it;
+            it = number.insert(it, { a, it->depth });
+            
+            if (it->depth + baseDepth > 4) {
+                it = explode(number, it);
             }
         } else {
             ++it;
@@ -120,8 +120,8 @@ int main() {
             n.depth += i - 1;
         }
     }
-    size_t first = magnitude(sum);
 
+    size_t first = magnitude(sum);
     size_t second = 0;
     for (int i = 0; i < numbers.size(); ++i) {
         for (int j = 0; j < numbers.size(); ++j) {
